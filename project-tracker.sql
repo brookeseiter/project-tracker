@@ -76,11 +76,29 @@ ALTER TABLE public.projects OWNER TO brookeseiter;
 CREATE TABLE public.students (
     github character varying(30) NOT NULL,
     first_name character varying(30),
-    last_name character varying(30)
+    last_name character varying(30),
+    cohort character varying(20)
 );
 
 
 ALTER TABLE public.students OWNER TO brookeseiter;
+
+--
+-- Name: report_card_view; Type: VIEW; Schema: public; Owner: brookeseiter
+--
+
+CREATE VIEW public.report_card_view AS
+ SELECT students.first_name,
+    students.last_name,
+    projects.title,
+    projects.max_grade,
+    grades.grade
+   FROM ((public.students
+     JOIN public.grades ON (((students.github)::text = (grades.student_github)::text)))
+     JOIN public.projects ON (((projects.title)::text = (grades.project_title)::text)));
+
+
+ALTER TABLE public.report_card_view OWNER TO brookeseiter;
 
 --
 -- Name: grades id; Type: DEFAULT; Schema: public; Owner: brookeseiter
@@ -115,9 +133,9 @@ Blockly	Programmatic Logic Puzzle Game	100
 -- Data for Name: students; Type: TABLE DATA; Schema: public; Owner: brookeseiter
 --
 
-COPY public.students (github, first_name, last_name) FROM stdin;
-jhacks	Jane	Hacker
-sdevelops	Sarah	Developer
+COPY public.students (github, first_name, last_name, cohort) FROM stdin;
+jhacks	Jane	Hacker	\N
+sdevelops	Sarah	Developer	\N
 \.
 
 
